@@ -49,12 +49,9 @@ class DHIS2Filters extends Component {
     render() {
         let dtent = "collapse " + this.props.cname;
         return (
-            <div
-                id="filters_options"
-                style={{ backgroundColor: "#276696" }}
-                className={dtent}
-            >
-                <div className="card card-body" style={{ backgroundColor: "#276696" }}>
+            <div id="filters_options" style={{ backgroundColor: "#f8f8f8" }} className={dtent}>
+                <div className="card-header h1 align-content-cente" style={{ color: "#276696" }}>DHIS2Filters</div>
+                <div className="card card-body" style={{ backgroundColor: "#f8f8f8" }}>
                     <div className=" row">
                         <div className="col">
                             <div className="filter_option ">
@@ -98,11 +95,7 @@ class DHIS2Filters extends Component {
                         </div>
                         <div className="col">
                             <div className="filter_option ">
-                                <select
-                                    id="ward"
-                                    className="form-control form-control-sm custom-select"
-                                    onChange={this.countySelected.bind(this)}
-                                >
+                                <select id="ward" className="form-control form-control-sm custom-select" onChange={this.countySelected.bind(this)}>
                                     <option value={-1}>select county</option>
                                     {this.state.wards.map(ward => (
                                         <option
@@ -120,7 +113,10 @@ class DHIS2Filters extends Component {
                 </div>
                 <button
                     onClick={this.runQuery.bind(this)}
-                    className="btn btn-secondary"
+                    className="btn btn-primary"
+                    data-target="#filters_options"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
                     style={{ marginLeft: "50%" }}
                 >
                     RUN QUERY

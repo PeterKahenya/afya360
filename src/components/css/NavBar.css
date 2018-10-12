@@ -1,5 +1,5 @@
-.navbar {
-  min-height: 80px;
+.mynav {
+padding:0;
 }
 
 .navbar-brand {
@@ -7,6 +7,7 @@
   height: 80px;
   line-height: 80px;
 }
+
 
 .navbar-toggle {
   /* (80px - button height 34px) / 2 = 23px */
@@ -23,15 +24,19 @@
   }
 }
 
+
+
+
 .nav_searchbar {
-  width: 800px;
+  width: 600px;
 }
 
 .nav_title {
   text-align: center;
-  font-size: 3em;
+  font-size: 2em;
   font-family: "Canterbury";
+  cursor: pointer;
   color: #ffffff;
   font-weight: bolder;
-  text-shadow: 1px 2px 30px #8d8d8d;
+  text-shadow: 1px 2px 30px #276696;
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { updatedhis2, dhis2query, dhis2_add_facility } from "../workers/worker.js"
+import { updatedhis2, dhis2query, dhis2_add_facility, dropOrg } from "../workers/worker.js"
 
 
 class ResolutionItem extends Component {
@@ -12,7 +12,6 @@ class ResolutionItem extends Component {
     add(e) {
         var facility = this.props.resolution.mfl
         dhis2query("organisationUnits.json?filter=level:eq:4&filter=displayName:ilike:" + facility.ward_name.replace(/'/g, "")).then(resp => {
-            console.log(facility.ward_name, facility.county, facility.sub_county, resp)
             var parent = resp.organisationUnits[0].id;
             var payload = {
                 name: facility.name,
@@ -30,6 +29,8 @@ class ResolutionItem extends Component {
                 code: JSON.stringify(facility.code)
             };
             dhis2_add_facility(payload).then(res => {
+                alert(res.httpStatusCode)
+                alert(res.httpStatus)
                 if (res.httpStatusCode === 201) {
                     this.setState({
                         update_state: 1
@@ -39,7 +40,7 @@ class ResolutionItem extends Component {
                     this.setState({
                         update_state: 1
                     });
-                    alert("DONE")
+                    alert(res)
                 }
             });
         });
@@ -47,7 +48,13 @@ class ResolutionItem extends Component {
 
     }
     drop(e) {
-        var facility = this.props.resolution
+        var facility = this.props.resolution;
+        dropOrg(facility.dhis.id).then(resp => {
+            this.setState({
+                update_state: 1
+            });
+            alert(resp)
+        })
     }
 
     updateCode(e) {
@@ -65,7 +72,7 @@ class ResolutionItem extends Component {
                 this.setState({
                     update_state: 1
                 });
-                alert("DONE")
+                alert(res)
             }
         });
 
@@ -83,6 +90,7 @@ class ResolutionItem extends Component {
                 this.setState({
                     update_state: 1
                 });
+                alert(res)
             }
         });
 
@@ -101,7 +109,8 @@ class ResolutionItem extends Component {
                 console.log("Update geo done")
                 this.setState({ update_state: 1 });
             }
-            console.log(this.state.update_state)
+            alert(res)
+
         });
     }
 
@@ -130,8 +139,7 @@ class ResolutionItem extends Component {
                         </div>
 
                         <div className="modal-body">
-                            {this.state.update_state ? (<p className="h1 text-success">DONE</p>) : (<p className="h1 text-primary">UPDATING</p>)}
-                            {/*    {this.state.update_state === 1 ? (
+                            {this.state.update_state === 1 ? (
                                 <div>
                                     <i className="material-icons" style={{ color: "#5cb85c" }}>
                                         check
@@ -154,7 +162,7 @@ class ResolutionItem extends Component {
                                     cross
                                     </i>
                                 <p className="h1 text-danger">something went wrong!!!:( </p>
-                            </div>)} */}
+                            </div>)}
                         </div>
                         <div className="modal-footer">
                             {this.state.update_state ? (

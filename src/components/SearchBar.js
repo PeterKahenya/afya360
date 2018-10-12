@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import "./css/searchbar.css"
 import DHIS2Filters from "./DHIS2Filters"
 import MFLFilters from "./MFLFilters"
-import { mflquery } from "../workers/worker.js"
+import { mflquery, dhis2query } from "../workers/worker.js"
 class SearchBar extends Component {
     constructor(props) {
         super(props);
@@ -10,9 +10,11 @@ class SearchBar extends Component {
             system: "KMHFL",
             query: ""
         }
+        localStorage.setItem("app_system", "KMHFL")
     }
     changeSystem(e) {
         this.setState({ system: e.target.value })
+        localStorage.setItem("app_system", JSON.stringify(e.target.value))
     }
     searchTerm(e) {
         this.props.searchTerm(document.getElementById("query").value, this.state.system)
@@ -25,23 +27,21 @@ class SearchBar extends Component {
         return (
             <div className={this.props.cname}>
                 <div className="system_choice">
-                    <input type="radio" value="KMHFL" className="form-radio" onChange={this.changeSystem.bind(this)} name="system" />
+                    <input type="radio" value="KMHFL" id="kmhf-radio" className="form-radio" onChange={this.changeSystem.bind(this)} defaultChecked name="system" />
                     <label className="h2 text-secondary">KMHFL</label>
                     <input type="radio" value="DHIS2" className="form-radio" onChange={this.changeSystem.bind(this)} name="system" />
                     <label className="h2 text-secondary">DHIS2</label>
                 </div>
-                <div
-                    className="input-group mb-3 input-group-lg"
+                <div className="input-group shadow-sm input-group-lg"
                     style={{
                         height: "50px",
                         border: "none",
-                        backgroundColor: "white",
+                        backgroundColor: "#F8F8F8",
                         borderRadius: "30px"
                     }}
-                    id="suggestions"
-                >
-                    <div className="input-group">
-                        <button
+                    id="suggestions">
+                    <div className="input-group-prepend">
+                        <span
                             className="input-group-text btn btn-primary filtersbtn "
                             id="inputGroup-sizing-lg"
                             data-toggle="collapse"
@@ -49,49 +49,54 @@ class SearchBar extends Component {
                             aria-expanded="false"
                             aria-controls="collapseExample"
                             style={{
-                                backgroundColor: "#fff",
+                                backgroundColor: "#F8F8F8",
                                 height: "50px",
                                 cursor: "pointer",
                                 borderRadius: "30px",
                                 border: "0"
                             }}
-                        ><i
-                            className="material-icons"
-                            style={{ color: "rgb(1, 126, 199)" }}
-                        >
+                        ><i className="material-icons" style={{ color: "rgb(1, 126, 199)" }}>
                                 filter_list
-              </i>
+                                </i>
 
-                        </button>
-                        <input id="term" style={{
-                            height: "50px",
-                            lineHeight: "100px",
-                            boxShadow: "0px 0px 0px  #ccc",
-                            border: "none",
-                            borderRadius: "30px",
-                            width: "575px",
-                            fontSize: "1.5em"
-                        }}
-                            onChange={this.valueChanged.bind(this)}
-                            id="query"
-                            placeholder="Search Facility Name, MFL code or Location..."
-                            aria-label="Search Facility Name, MFL code or Location..."
-                            aria-describedby="button-addon4" />
-                        <div className="input-group-prepend" style={{}} >
-                            <button className="btn shadow-lg btn-info" onClick={this.searchTerm.bind(this)} style={{
+                        </span>
+
+                    </div>
+                    <input type="text" className="form-control" aria-label="Sizing example input" style={{
+                        height: "100%",
+                        backgroundColor: "#F8F8F8",
+                        fontSize: "1.5em",
+                        border: "0"
+                    }} onChange={this.valueChanged.bind(this)}
+                        id="query"
+                        placeholder="Search Facility Name, MFL code or Location..."
+                        aria-label="Search Facility Name, MFL code or Location..."
+                        aria-describedby="button-addon4" />
+                    <div className="input-group-prepend">
+                        <button className="btn input-group-text" id="inputGroup-sizing-lg"
+                            onClick={this.searchTerm.bind(this)} style={{
                                 height: "50px",
+                                width: "100px",
                                 borderRadius: "30px",
-                                float: "right"
+                                padding: "30px",
+                                paddingTop: "0",
+                                paddingBottom: "0",
+                                float: "right",
+                                border: "none",
+                                backgroundColor: "transparent"
+
+
+
                             }}
-                                id="smartbtn"><i
-                                    className="material-icons"
-                                    style={{}}
-                                >
-                                    search
-                  </i></button>
-                        </div>
+                            id="smartbtn">
+                            <i className="material-icons" style={{ color: "#276696", width: "50px" }}>
+                                search
+                            </i>
+                        </button>
                     </div>
                 </div>
+
+
                 {this.state.system === "KMHFL" ? <MFLFilters runQuery={this.runQuery.bind(this)} /> : <DHIS2Filters runQuery={this.runQuery.bind(this)} />}
             </div>);
     }
@@ -121,26 +126,46 @@ class SearchBar extends Component {
             a.setAttribute("id", this.id + "autocomplete-list");
             a.setAttribute("class", "autocomplete-items");
             document.getElementById("suggestions").appendChild(a);
-            mflquery("facilities/facilities/?format=json&page_size=5&search=" + val).then(res => {
-                res.results.map(facility => {
-                    b = document.createElement("DIV");
-                    b.innerHTML =
-                        "<strong>" + facility.name.substr(0, val.length) + "</strong>";
-                    b.innerHTML += facility.name.substr(val.length);
-                    b.innerHTML += "<input type='hidden' value='" + facility.name + "'>";
-                    b.addEventListener("click", function (e) {
-                        inp.value = this.getElementsByTagName("input")[0].value;
-                        document.getElementById("smartbtn").style =
-                            "display:block;height:50px;border-radius:30px";
-                        document.getElementById("smartbtn").className =
-                            "btn btn-outline-primary";
-                        closeAllLists();
+            if (document.getElementById("kmhf-radio").checked) {
+                mflquery("facilities/facilities/?format=json&page_size=5&search=" + val).then(res => {
+                    res.results.map(facility => {
+                        b = document.createElement("DIV");
+                        b.innerHTML =
+                            "<strong>" + facility.name.substr(0, val.length) + "</strong>";
+                        b.innerHTML += facility.name.substr(val.length);
+                        b.innerHTML += "<input type='hidden' value='" + facility.name + "'>";
+                        b.addEventListener("click", function (e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            document.getElementById("smartbtn").style =
+                                "display:block;height:50px;border-radius:30px";
+                            document.getElementById("smartbtn").className =
+                                "btn btn-outline-primary";
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
                     });
-                    a.appendChild(b);
                 });
-            });
+            } else {
+                dhis2query("organisationUnits.json?filter=displayName:ilike:" + val).then(res => {
+                    res.organisationUnits.map(facility => {
+                        b = document.createElement("DIV");
+                        b.innerHTML =
+                            "<strong>" + facility.displayName.substr(0, val.length) + "</strong>";
+                        b.innerHTML += facility.displayName.substr(val.length);
+                        b.innerHTML += "<input type='hidden' value='" + facility.displayName + "'>";
+                        b.addEventListener("click", function (e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            document.getElementById("smartbtn").style =
+                                "display:block;height:50px;border-radius:30px";
+                            document.getElementById("smartbtn").className =
+                                "btn btn-outline-primary";
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    });
+                });
+            }
         });
-        document.getElementById("smartbtn").onclick = this.searchTerm.bind(this);
         inp.addEventListener("keydown", function (e) {
             var x = document.getElementById(this.id + "autocomplete-list");
             if (x) x = x.getElementsByTagName("div");

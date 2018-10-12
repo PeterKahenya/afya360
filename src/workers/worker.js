@@ -68,6 +68,7 @@ export async function dhis2query(query) {
     }
   };
   return $.ajax(settings).done(function (response) {
+    console.log(response)
     return response;
   });
 }
@@ -88,6 +89,7 @@ export async function dhis2_add_facility(payl) {
     data: payload
   };
   return await $.ajax(settings).done(function (response) {
+    console.log(response)
     return response;
   });
 }
@@ -134,13 +136,13 @@ export async function updatedhis2(orgid, payload) {
   };
   console.log(settings);
   return await $.ajax(settings).done(function (response) {
-    //console.log(response);
+    console.log(response);
 
     return response;
   });
 }
 
-export async function drop(orgid) {
+export async function dropOrg(orgid) {
 
   var settings = {
     async: true,

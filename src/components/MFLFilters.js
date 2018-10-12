@@ -44,7 +44,7 @@ class MFLFilters extends Component {
         var county = document.getElementById("county").value;
         var subcounty = document.getElementById("sub_county").value;
         var ward = document.getElementById("ward").value;
-        var service = document.getElementById("service").value;
+        /* var service = document.getElementById("service").value;
         var hasbeds = document.getElementById("has_beds").checked;
         var hascots = document.getElementById("has_cots").checked;
         var no_beds = document.getElementById("no_beds").value;
@@ -52,30 +52,30 @@ class MFLFilters extends Component {
         var keph = document.getElementById("keph_level").value;
         var owner = document.getElementById("owner").value;
         var owner_type = document.getElementById("owner_type").value;
-        var operational = document.getElementById("operational").checked;
+        var operational = document.getElementById("operational").checked; */
 
         query = county !== "-1" ? "county=" + county : "";
         query += subcounty === "-1" ? "" : "&sub_county=" + subcounty;
         query += ward !== "-1" ? "&ward=" + ward : "";
-        query += service !== "-1" ? "&service=" + service : "";
-        console.log(query);
-        query += keph !== "-1" ? "&keph_level=" + keph : "";
-        console.log(query);
-        query += owner !== "-1" ? "&owner=" + owner : "";
-        console.log(query);
-
-        query += owner_type !== "-1" ? "&owner_type=" + owner_type : "";
-        console.log(query);
-        query += operational ? "&operational=true" : "";
-        console.log(query);
-        query += hasbeds ? "&has_beds=true" : "";
-        console.log(query);
-        query += hascots ? "&has_cots=true" : "";
-        console.log(query);
-        query += no_beds ? "&no_beds=" + no_beds : "";
-        console.log(query);
-        query += no_cots ? "&no_cots=" + no_cots : "";
-
+        /*  query += service !== "-1" ? "&service=" + service : "";
+         console.log(query);
+         query += keph !== "-1" ? "&keph_level=" + keph : "";
+         console.log(query);
+         query += owner !== "-1" ? "&owner=" + owner : "";
+         console.log(query);
+ 
+         query += owner_type !== "-1" ? "&owner_type=" + owner_type : "";
+         console.log(query);
+         query += operational ? "&operational=true" : "";
+         console.log(query);
+         query += hasbeds ? "&has_beds=true" : "";
+         console.log(query);
+         query += hascots ? "&has_cots=true" : "";
+         console.log(query);
+         query += no_beds ? "&no_beds=" + no_beds : "";
+         console.log(query);
+         query += no_cots ? "&no_cots=" + no_cots : "";
+  */
         console.log(query);
 
         this.props.runQuery(query);
@@ -85,10 +85,11 @@ class MFLFilters extends Component {
         return (
             <div
                 id="filters_options"
-                style={{ backgroundColor: "#276696" }}
+                style={{ backgroundColor: "#F8F8F8" }}
                 className={dtent}
             >
-                <div className="card card-body" style={{ backgroundColor: "#276696" }}>
+                <div className="card-header h1 align-content-cente" style={{ color: "#276696" }}>MFLFilters</div>
+                <div className="card card-body" style={{ backgroundColor: "#F8F8F8" }}>
                     <div className="row">
                         <div className="col">
                             <div className="filter_option ">
@@ -137,7 +138,7 @@ class MFLFilters extends Component {
                                 </select>
                             </div>
                         </div>
-                        <div className="col">
+                        {/*   <div className="col">
                             <div className="filter_option">
                                 <select
                                     id="service"
@@ -261,13 +262,18 @@ class MFLFilters extends Component {
                             </div>
                         </div>
                     </div>
+                 */}
+                    </div>
                 </div>
                 <button
                     onClick={this.runQuery.bind(this)}
-                    className="btn btn-secondary"
+                    className="btn btn-primary"
+                    data-target="#filters_options"
+                    aria-expanded="false"
+                    aria-controls="collapseExample"
                     style={{ marginLeft: "50%" }}
                 >
-                    runQuery
+                    SEARCH KMHFL
         </button>
             </div>
         );

@@ -19,9 +19,10 @@ class SearchResults extends Component {
         })
     }
     render() {
+        console.log(this.state.system)
         var id = 0;
         return (<div style={{ paddingLeft: "177px" }}>
-            {this.state.status === 1 ? "found " + this.state.results.length + " results" : this.state.status === 0 ? "searching " + this.state.system + "..." : ""}
+            {this.state.status === 1 ? "found " + this.state.results.length + " results" : this.state.status === 0 ? "searching " + localStorage.getItem("app_system") + "..." : ""}
             {this.state.results.map(facility => {
                 id = id + 1
                 return this.state.system === "KMHFL" ? <Facility facility={facility} key={id} id={id} /> : <DHIS2Facility facility={facility} key={id} />

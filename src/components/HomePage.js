@@ -28,7 +28,7 @@ class HomePage extends Component {
           </div>
           <Title cname="home_title" />
           <br />
-          <SearchBar cname={"home_searchbar"} searchTerm={this.searchNow} runQuery={this.runQuery.bind(this)} />
+          <SearchBar cname={"home_searchbar"} searchTerm={this.searchNow.bind(this)} runQuery={this.runQuery.bind(this)} />
         </div>
       </div>
 
