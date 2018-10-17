@@ -1,21 +1,40 @@
 {
-  "name": "afya360",
-  "version": "0.1.0",
-  "private": true,
+  "name": "mflclient",
+  "version": "0.1.2",
+  "description": "MFL DHIS2 RESOLUTION APP",
+  "main": "index.js",
+  "homepage": "https://test.hiskenya.org/api/apps/mflclient/",
+  "license": "GPLv3",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && npm run manifest",
+    "postbuild": "cp icon.png ./build/",
+    "manifest": "d2-manifest package.json build/manifest.webapp",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
+    "@material-ui/core": "^3.2.2",
     "jquery": "^3.3.1",
+    "d2": "^30.0.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+  "manifest.webapp": {
+    "name": "mflclient",
+    "icons": {
+      "48": "icon.png"
+    },
+    "developer": {
+      "url": "https://github.com/PeterKahenya",
+      "name": "University of Nairobi Health IT"
+    },
+    "activities": {
+      "dhis": {
+        "href": "*"
+      }
+    }
   },
   "browserslist": [
     ">0.2%",

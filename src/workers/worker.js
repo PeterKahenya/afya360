@@ -163,3 +163,22 @@ export async function dropOrg(orgid) {
 
 }
 
+export async function lock(orgid) {
+  var settings = {
+    async: true,
+    crossDomain: true,
+    url: dhis2_url + orgid + "/users/" + ".json",
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${btoa(dhis2username + ":" + dhis2password)}`
+    },
+    processData: false,
+
+  };
+  return await $.ajax(settings).done(function (response) {
+    console.log(response);
+    return response;
+  });
+}
+

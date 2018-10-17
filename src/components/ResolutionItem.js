@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { updatedhis2, dhis2query, dhis2_add_facility, dropOrg } from "../workers/worker.js"
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ResolutionItem extends Component {
     constructor(props) {
@@ -11,6 +11,7 @@ class ResolutionItem extends Component {
 
     add(e) {
         var facility = this.props.resolution.mfl
+        this.setState({ update_state: 1 })
         dhis2query("organisationUnits.json?filter=level:eq:4&filter=displayName:ilike:" + facility.ward_name.replace(/'/g, "")).then(resp => {
             var parent = resp.organisationUnits[0].id;
             var payload = {
@@ -33,14 +34,14 @@ class ResolutionItem extends Component {
                 alert(res.httpStatus)
                 if (res.httpStatusCode === 201) {
                     this.setState({
-                        update_state: 1
+                        update_state: 2
                     });
                 }
                 else {
                     this.setState({
-                        update_state: 1
+                        update_state: 2
                     });
-                    alert(res)
+
                 }
             });
         });
@@ -49,9 +50,10 @@ class ResolutionItem extends Component {
     }
     drop(e) {
         var facility = this.props.resolution;
+        this.setState({ update_state: 1 })
         dropOrg(facility.dhis.id).then(resp => {
             this.setState({
-                update_state: 1
+                update_state: 2
             });
             alert(resp)
         })
@@ -59,7 +61,7 @@ class ResolutionItem extends Component {
 
     updateCode(e) {
         var facility = this.props.resolution
-        this.setState({ update_state: 0 });
+        this.setState({ update_state: 1 });
         updatedhis2(e.target.id, {
             coordinates: facility.dhis.coordinates,
             name: facility.dhis.displayName,
@@ -70,16 +72,16 @@ class ResolutionItem extends Component {
             if (res.httpStatusCode === 200) {
                 console.log("Update Code done")
                 this.setState({
-                    update_state: 1
+                    update_state: 2
                 });
-                alert(res)
+
             }
         });
 
     }
     updateName(e) {
         var facility = this.props.resolution
-        this.setState({ update_state: 0 });
+        this.setState({ update_state: 1 });
         updatedhis2(e.target.id, {
             name: facility.mfl.name,//UPDATE WITH MFL NAME
             shortName: facility.dhis.shortName,
@@ -88,16 +90,15 @@ class ResolutionItem extends Component {
             if (res.httpStatusCode === 200) {
                 console.log("Update Name done")
                 this.setState({
-                    update_state: 1
+                    update_state: 2
                 });
-                alert(res)
             }
         });
 
     }
     updateGeo(e) {
         var facility = this.props.resolution
-        this.setState({ update_state: 0 });
+        this.setState({ update_state: 1 });
         console.log(this.state)
         updatedhis2(e.target.id, {
             coordinates: JSON.stringify(facility.mfl.lat_long),//UPDATE WITH DHIS2 NAME
@@ -107,15 +108,14 @@ class ResolutionItem extends Component {
         }).then(res => {
             if (res.httpStatusCode === 200) {
                 console.log("Update geo done")
-                this.setState({ update_state: 1 });
+                this.setState({ update_state: 2 });
             }
-            alert(res)
+
 
         });
     }
-
     render() {
-        var resolution = this.props.resolution
+        var resolution = this.props.resolution;
         var resolvTable = null;
         if (!resolution.exists_in_dhis) {
             resolvTable = this.getAddTable(resolution)
@@ -127,78 +127,35 @@ class ResolutionItem extends Component {
             }
         }
 
-        return <div style={{ paddingTop: "50px" }}><div className="card shadow">{resolvTable}</div>
-            <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="exampleModalLongTitle">Updating DHIS2...</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <div className="modal-body">
-                            {this.state.update_state === 1 ? (
-                                <div>
-                                    <i className="material-icons" style={{ color: "#5cb85c" }}>
-                                        check
-                                        </i>
-                                    <p className="h1 text-success">DONE </p>
-                                </div>
-                            ) : this.state.update_state === 0 ? (
-                                <div className="progress">
-                                    <div
-                                        className="progress-bar progress-bar-striped progress-bar-animated"
-                                        role="progressbar"
-                                        aria-valuenow="75"
-                                        aria-valuemin="0"
-                                        aria-valuemax="100"
-                                        style={{ width: "75%" }}
-                                    />
-                                </div>
-                            ) : (<div>
-                                <i className="material-icons" style={{ color: "#ff0001" }}>
-                                    cross
-                                    </i>
-                                <p className="h1 text-danger">something went wrong!!!:( </p>
-                            </div>)}
-                        </div>
-                        <div className="modal-footer">
-                            {this.state.update_state ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-success"
-                                    data-dismiss="modal"
-                                >
-                                    close
-                  </button>
-                            ) : (
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary"
-                                        data-dismiss="modal"
-                                    >
-                                        updating...
-                  </button>
-                                )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>;
+        return (<div style={{ paddingTop: "50px" }}>
+            <div className="card shadow">{resolvTable}</div>
+        </div>);
     }
 
 
     getAddTable(resolution) {
+        var theState = "";
+        switch (this.state.update_state) {
+            case 0:
+                theState = "Add to dhis2"
+                break;
+            case 1:
+                theState = <CircularProgress size={24} className="btn-success" />;
+                break;
+            case 2:
+                theState = "DONE"
+                break;
+            default:
+                break;
+        }
         var coordinates = resolution.mfl.lat_long === "undefined" || resolution.mfl.lat_long === null ? [0, 0] : resolution.mfl.lat_long
         return (<table className="table"><thead><tr><th scope="col">DHIS</th><th scope="col">MFL</th><th scope="col"></th></tr></thead>
             <tbody>
                 <tr >
                     <td></td>
                     <td>{resolution.mfl.name}</td>
-                    <td><button className="btn btn-outline-primary" onClick={this.add.bind(this)} data-toggle="modal"
-                        data-target="#exampleModalCenter">Add DHIS</button></td>
+                    <td><button className={"btn btn-" + this.update_state !== 2 ? "primary" : "success"} onClick={this.add.bind(this)}>
+                        {theState} </button></td>
                 </tr>
                 <tr >
                     <td></td>
@@ -216,14 +173,27 @@ class ResolutionItem extends Component {
     }
 
     getDropTable(resolution) {
+        var theState = "";
+        switch (this.state.update_state) {
+            case 0:
+                theState = "delete"
+                break;
+            case 1:
+                theState = <CircularProgress size={24} className="btn-success" />;
+                break;
+            case 2:
+                theState = "DONE"
+                break;
+            default:
+                break;
+        }
         var coordinates = resolution.dhis.coordinates === undefined || resolution.dhis.coordinates === null ? [0, 0] : JSON.parse(resolution.dhis.coordinates)
         return (<table className="table"><thead><tr><th scope="col">DHIS</th><th scope="col">MFL</th><th scope="col"></th></tr></thead>
             <tbody>
                 <tr >
                     <td>{resolution.dhis.displayName}</td>
                     <td></td>
-                    <td><button className="btn btn-outline-primary" onClick={this.drop.bind(this)} data-toggle="modal"
-                        data-target="#exampleModalCenter">Delete</button></td>
+                    <td><button className={"btn btn-" + this.update_state !== 2 ? "primary" : "success"} onClick={this.drop.bind(this)} >{theState}</button></td>
                 </tr>
                 <tr >
                     <td>{resolution.dhis.code}</td>
@@ -240,6 +210,20 @@ class ResolutionItem extends Component {
     }
 
     getUpdateTable(resolution) {
+        var theState = "";
+        switch (this.state.update_state) {
+            case 0:
+                theState = "update dhis2"
+                break;
+            case 1:
+                theState = <CircularProgress size={24} />;
+                break;
+            case 2:
+                theState = "DONE"
+                break;
+            default:
+                break;
+        }
         var mflcoordinates = resolution.mfl.lat_long === undefined || resolution.mfl.lat_long === null ? [0, 0] : resolution.mfl.lat_long
         var dhiscoordinates = null
         try {
@@ -253,19 +237,19 @@ class ResolutionItem extends Component {
                     <td>{resolution.dhis.displayName}</td>
                     <td>{resolution.mfl.name}</td>
                     <td>{resolution.mfl.name === resolution.dhis.displayName ? "" : <button data-toggle="modal"
-                        data-target="#exampleModalCenter" className="btn btn-outline-primary" onClick={this.updateName.bind(this)} id={resolution.dhis.id}>Update DHIS</button>}</td>
+                        data-target="#exampleModalCenter" className="btn btn-primary" onClick={this.updateName.bind(this)} id={resolution.dhis.id}>{theState}</button>}</td>
                 </tr>
                 <tr className={resolution.mfl.code === parseInt(resolution.dhis.code) ? "" : "table-danger"} >
                     <td>{resolution.dhis.code}</td>
                     <td>{resolution.mfl.code}</td>
                     <td>{resolution.mfl.code === parseInt(resolution.dhis.code) ? "" : <button data-toggle="modal"
-                        data-target="#exampleModalCenter" className="btn btn-outline-primary" onClick={this.updateCode.bind(this)}>Update DHIS</button>}</td>
+                        data-target="#exampleModalCenter" className="btn btn-primary" onClick={this.updateCode.bind(this)}>{theState}</button>}</td>
                 </tr>
                 <tr className={dhiscoordinates[1] === mflcoordinates[0] && dhiscoordinates[0] === mflcoordinates[1] ? "" : "table-danger"} >
                     <td>{"[" + dhiscoordinates[1] + "," + dhiscoordinates[0] + "]"}</td>
                     <td>{"[" + mflcoordinates[0] + "," + mflcoordinates[1] + "]"}</td>
                     <td>{dhiscoordinates[1] === mflcoordinates[0] && dhiscoordinates[0] === mflcoordinates[1] ? "" : <button data-toggle="modal"
-                        data-target="#exampleModalCenter" className="btn btn-outline-primary" onClick={this.updateGeo.bind(this)} id={resolution.dhis.id}>Update DHIS</button>}</td>
+                        data-target="#exampleModalCenter" className="btn btn-primary" onClick={this.updateGeo.bind(this)} id={resolution.dhis.id}>{theState}</button>}</td>
                 </tr>
             </tbody>
         </table>)

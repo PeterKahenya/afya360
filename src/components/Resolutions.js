@@ -16,7 +16,7 @@ export default class Resolutions extends Component {
             {this.state.progress > 0 && this.progress !== 1 ? "" : "Awaiting search..."}
             {this.state.resolutions.map(resolution => {
 
-                return (<ResolutionItem resolution={resolution} key={resolution.exists_in_mfl ? resolution.mfl.id : resolution.dhis.id} />);
+                return (<ResolutionItem resolution={resolution} changeStatus={this.changeStatus} key={resolution.exists_in_mfl ? resolution.mfl.id : resolution.dhis.id} />);
             })}
         </div>);
     }
