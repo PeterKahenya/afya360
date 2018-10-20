@@ -15,7 +15,7 @@ class Facility extends Component {
         }}
       >
         <div>
-          <div className="card border-primary mb-3" style={{ maxWidth: "80%" }}>
+          <div className="card border-white mb-3 shadow-lg" style={{ maxWidth: "80%" }}>
             <div className="card-header">
               <div>
                 <span

@@ -26,11 +26,11 @@ class ResultsPage extends Component {
       <div className="results">
 
         <NavBar runQuery={this.runQuery.bind(this)} searchTerm={this.searchTerm.bind(this)} />
-        <div className="tab-content" id="myTabContent">
-          <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div className="tab-content" id="myTabContent" style={{ paddingTop: "150px", backgroundColor: "#ccc", height: "100%" }}>
+          <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" style={{ backgroundColor: "#ccc" }}>
             <SearchResults results={this.state.results} system={this.state.system} status={this.state.status} />
           </div>
-          <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" style={{ backgroundColor: "#ccc" }}>
             <Resolutions results={this.state.results} system={this.state.system} status={this.state.status} /></div>
         </div>
 

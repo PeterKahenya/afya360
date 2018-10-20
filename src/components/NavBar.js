@@ -20,14 +20,14 @@ class NavBar extends Component {
     }
     render() {
         return (
-            <div className="shadow-sm">
+            <div className="shadow-lg fixed-top" style={{ backgroundColor: "#276696" }}>
                 <nav className="mynav navbar navbar-expand-lg ">
                     <label className="navbar-brand" onClick={this.goHome.bind(this)}><Title cname={"nav_title"} /></label>
                     <div className="nav-item" >
                         <SearchBar runQuery={this.runQuery.bind(this)} searchTerm={this.searchNow.bind(this)} cname={"nav_searchbar"} /><br />
                     </div>
                 </nav>
-                <ul className="nav nav-tabs" id="myTab" role="tablist" style={{ paddingLeft: "177px", paddingTop: "0" }}>
+                <ul className="nav nav-tabs" id="myTab" role="tablist" style={{ paddingLeft: "177px", paddingTop: "0", borderBottom: "0px solid transparent" }}>
                     <li className="nav-item">
                         <a className="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Results</a>
                     </li>

@@ -1,6 +1,9 @@
 .mynav {
 padding:0;
 }
+.nav-tabs{
+  border-bottom: "0px solid transparent"
+}
 
 .navbar-brand {
   padding: 0 5px;
