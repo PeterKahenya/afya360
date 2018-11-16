@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ResolutionItem from "./ResolutionItem"
 import { mflquery, dhis2query } from '../workers/worker.js';
-import { load } from "./load.gif"
 
 
 export default class Resolutions extends Component {
@@ -27,7 +26,7 @@ export default class Resolutions extends Component {
             var progress = ((index + 1) / results.length)
             this.setState({ progress: progress })
             console.log(this.state.progress, ((index + 1) / results.length))
-            mflquery("facilities/facilities/?format=json&name=" + orgunit.displayName + "&code=" + orgunit.code).then(resp => {
+            return mflquery("facilities/facilities/?format=json&name=" + orgunit.displayName + "&code=" + orgunit.code).then(resp => {
                 if (resp.results.length !== 1) {
                     mflquery("facilities/facilities/?format=json&name=" + orgunit.displayName).then(resp => {
                         if (resp.results.length !== 1) {
@@ -88,7 +87,7 @@ export default class Resolutions extends Component {
         results.map((facility, index) => {
             var progress = ((index + 1) / results.length)
             this.setState({ progress: progress })
-            dhis2query("organisationUnits.json?filter=level:eq:5&filter=displayName:ilike:" + facility.name + "&filter=code:eq:" + facility.code).then(resp => {
+            return dhis2query("organisationUnits.json?filter=level:eq:5&filter=displayName:ilike:" + facility.name + "&filter=code:eq:" + facility.code).then(resp => {
                 if (resp.pager.total !== 1) {
                     dhis2query("organisationUnits.json?filter=level:eq:5&filter=code:eq:" + facility.code).then(resp => {
                         if (resp.pager.total !== 1) {

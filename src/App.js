@@ -17,10 +17,10 @@ class App extends Component {
     this.searchTerm = this.searchTerm.bind(this)
   }
 
-  runQuery(query, system) {
+  runQuery = (query, system) => {
     this.setState({ in_homepage: false, results: [], status: 0 })
     if (system === "KMHFL") {
-      mflquery("facilities/facilities/?format=json&page_size=10&" + query).then(mfl_res => {
+      return mflquery("facilities/facilities/?format=json&page_size=10&" + query).then(mfl_res => {
         this.setState({
           system: system,
           results: mfl_res.results,
@@ -28,7 +28,7 @@ class App extends Component {
         })
       })
     } else {
-      dhis2query("organisationUnits.json?filter=level:eq:5&" + query).then(resp => {
+      return dhis2query("organisationUnits.json?filter=level:eq:5&" + query).then(resp => {
         var temp = []
         resp.organisationUnits.map(org => {
           dhis2query("organisationUnits/" + org.id + ".json").then(org_unit => {

@@ -164,10 +164,11 @@ export async function dropOrg(orgid) {
 }
 
 export async function lock(orgid) {
+  var url = dhis2_url + orgid + "/users/" + ".json"
   var settings = {
     async: true,
     crossDomain: true,
-    url: dhis2_url + orgid + "/users/" + ".json",
+    url: url,
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

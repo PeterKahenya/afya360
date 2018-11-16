@@ -100,13 +100,10 @@ class SearchBar extends Component {
                 {this.state.system === "KMHFL" ? <MFLFilters runQuery={this.runQuery.bind(this)} /> : <DHIS2Filters runQuery={this.runQuery.bind(this)} />}
             </div>);
     }
-    valueChanged(e) {
-        var valuesofar = e.target.value;
-        var mflcodes = JSON.parse(localStorage.getItem("mfl_codes")).map(code => {
+    valueChanged = (e) => {
+        return JSON.parse(localStorage.getItem("mfl_codes")).map(code => {
             return code.code;
         });
-
-
 
     }
     componentDidMount() {
@@ -115,7 +112,6 @@ class SearchBar extends Component {
         inp.addEventListener("input", function (e) {
             var a,
                 b,
-                i,
                 val = this.value;
             closeAllLists();
             if (!val) {
@@ -127,8 +123,8 @@ class SearchBar extends Component {
             a.setAttribute("class", "autocomplete-items");
             document.getElementById("suggestions").appendChild(a);
             if (document.getElementById("kmhf-radio").checked) {
-                mflquery("facilities/facilities/?format=json&page_size=5&search=" + val).then(res => {
-                    res.results.map(facility => {
+                return mflquery("facilities/facilities/?format=json&page_size=5&search=" + val).then(res => {
+                    return res.results.map(facility => {
                         b = document.createElement("DIV");
                         b.innerHTML =
                             "<strong>" + facility.name.substr(0, val.length) + "</strong>";
@@ -146,8 +142,8 @@ class SearchBar extends Component {
                     });
                 });
             } else {
-                dhis2query("organisationUnits.json?filter=displayName:ilike:" + val).then(res => {
-                    res.organisationUnits.map(facility => {
+                return dhis2query("organisationUnits.json?filter=displayName:ilike:" + val).then(res => {
+                    return res.organisationUnits.map(facility => {
                         b = document.createElement("DIV");
                         b.innerHTML =
                             "<strong>" + facility.displayName.substr(0, val.length) + "</strong>";
@@ -169,13 +165,13 @@ class SearchBar extends Component {
         inp.addEventListener("keydown", function (e) {
             var x = document.getElementById(this.id + "autocomplete-list");
             if (x) x = x.getElementsByTagName("div");
-            if (e.keyCode == 40) {
+            if (e.keyCode === 40) {
                 currentFocus++;
                 addActive(x);
-            } else if (e.keyCode == 38) {
+            } else if (e.keyCode === 38) {
                 currentFocus--;
                 addActive(x);
-            } else if (e.keyCode == 13) {
+            } else if (e.keyCode === 13) {
                 e.preventDefault();
                 if (currentFocus > -1) {
                     if (x) x[currentFocus].click();
@@ -197,7 +193,7 @@ class SearchBar extends Component {
         function closeAllLists(elmnt) {
             var x = document.getElementsByClassName("autocomplete-items");
             for (var i = 0; i < x.length; i++) {
-                if (elmnt != x[i] && elmnt != inp) {
+                if (elmnt !== x[i] && elmnt !== inp) {
                     x[i].parentNode.removeChild(x[i]);
                 }
             }
